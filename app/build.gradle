@@ -1,0 +1,60 @@
+/*
+ * BU, app/build.gradle DOSYASININ NİHAİ VE DOĞRU HALİDİR.
+ * 'application' eklentisi (ClassCastException HATASININ NEDENİ) KALDIRILMIŞTIR.
+ */
+plugins {
+    id 'org.springframework.boot' version '3.2.0'
+    id 'io.spring.dependency-management' version '1.1.0'
+    id 'java'
+    // 'application' eklentisi KALDIRILDI
+}
+
+group = 'com.sau'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+    implementation 'com.mysql:mysql-connector-j:8.0.33'
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+    implementation 'org.apache.hadoop:hadoop-client:3.3.4'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+// Kodların ana 'src' klasöründe olduğunu belirtir
+sourceSets {
+    main {
+        java {
+            srcDirs = ['../src/main/java']
+        }
+        resources {
+            srcDirs = ['../src/main/resources']
+        }
+    }
+}
+
+// 'application' bloğu KALDIRILDI
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+// Spring Boot'un ana sınıfı bulabilmesi için bu gereklidir
+bootRun {
+    mainClass = 'com.sau.hdfs.HdfsApplication'
+}

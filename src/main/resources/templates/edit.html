@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Employee</title>
+    <style th:inline="css">
+        /* edit.html dosyanızdaki tüm <style> içeriği buradaydı */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .container { max-width: 600px; width: 100%; background: white; border-radius: 15px; padding: 40px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2); }
+        h1 { color: #333; margin-bottom: 30px; font-size: 2em; text-align: center; }
+        h2 { color: #555; margin-bottom: 20px; font-size: 1.5em; text-align: center; border-bottom: 2px solid #eee; padding-bottom: 10px;}
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; color: #555; font-weight: 600; }
+        input, select { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1em; transition: all 0.3s; }
+        input:focus, select:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
+        .btn-group { display: flex; gap: 10px; margin-top: 30px; }
+        .btn { flex: 1; padding: 14px; border: none; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; transition: all 0.3s; }
+        .btn-primary { background: #667eea; color: white; }
+        .btn-primary:hover { background: #5568d3; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); }
+        .btn-secondary { background: #e0e0e0; color: #333; text-decoration: none; display: flex; align-items: center; justify-content: center; }
+        .btn-secondary:hover { background: #d0d0d0; }
+        .required { color: red; }
+        .current-image { text-align: center; margin-bottom: 20px; }
+        .current-image img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #667eea; }
+        .upload-form { margin-top: 30px; border-top: 2px dashed #ccc; padding-top: 30px;}
+    </style>
+</head>
+<body>
+<div class="container" th:if="${emp != null}">
+
+    <form th:action="@{/update}" method="post">
+        <h1>✏️ Edit Employee</h1>
+        <div class="form-group">
+            <label for="empno">Employee Number</label>
+            <input type="number" id="empno" name="empno" th:value="${emp.empno}" readonly style="background: #f5f5f5;"/>
+        </div>
+        <div class="form-group">
+            <label for="ename">Name <span class="required">*</span></label>
+            <input type="text" id="ename" name="ename" th:value="${emp.ename}" required/>
+        </div>
+        <div class="form-group">
+            <label for="job">Job Title</label>
+            <input type="text" id="job" name="job" th:value="${emp.job}"/>
+        </div>
+
+        <div class="form-group">
+            <label for="mgr">Manager</label>
+            <select id="mgr" name="mgr">
+                <option value="">-- No Manager --</option>
+                <option th:each="m : ${managers}"
+                        th:value="${m.empno}"
+                        th:text="${m.ename} + ' (' + ${m.empno} + ')'"
+                        th:selected="${emp.manager != null and emp.manager.empno == m.empno}"></option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="hiredate">Hire Date</label>
+            <input type="date" id="hiredate" name="hiredate"
+                   th:value="${emp.hiredate != null ? #dates.format(emp.hiredate, 'yyyy-MM-dd') : ''}"/>
+        </div>
+        <div class="form-group">
+            <label for="sal">Salary</label>
+            <input type="number" id="sal" name="sal" th:value="${emp.sal}"/>
+        </div>
+        <div class="form-group">
+            <label for="comm">Commission</label>
+            <input type="number" id="comm" name="comm" th:value="${emp.comm}"/>
+        </div>
+
+        <div class="form-group">
+            <label for="deptno">Department <span class="required">*</span></label>
+            <select id="deptno" name="deptno" required>
+                <option value="">-- Select Department --</option>
+                <option th:each="d : ${departments}"
+                        th:value="${d.deptno}"
+                        th:text="${d.dname}"
+                        th:selected="${emp.department != null and emp.department.deptno == d.deptno}"></option>
+            </select>
+        </div>
+
+        <div class="btn-group">
+            <button type="submit" class="btn btn-primary">💾 Update Details</button>
+            <a href="/" class="btn btn-secondary">❌ Cancel</a>
+        </div>
+    </form>
+
+
+    <form class="upload-form" th:action="@{/uploadImage}" method="post" enctype="multipart/form-data">
+        <h2>🖼️ Employee Image (HDFS)</h2>
+
+        <div class="current-image" th:if="${emp.imgUrl != null}">
+            <p style="margin-bottom: 10px; color: #666;">Current Image:</p>
+            <img th:src="@{/api/images/{id}(id=${emp.empno})}" alt="Current Image"/>
+        </div>
+
+        <input type="hidden" name="empno" th:value="${emp.empno}" />
+
+        <div class="form-group">
+            <label for="file">Upload New Image (Replaces current)</label>
+            <input type="file" id="file" name="file" accept="image/*" required/>
+        </div>
+
+        <div class="btn-group">
+            <button type="submit" class="btn btn-primary">🚀 Upload Image</button>
+        </div>
+    </form>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,24 @@
+# Gradle
+.gradle/
+build/
+app/build/
+app/.gradle/
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+app.log
+
+# Secrets
+# application.properties (Eğer şifreleri gizlemek istersen)
+# src/main/resources/application.properties
