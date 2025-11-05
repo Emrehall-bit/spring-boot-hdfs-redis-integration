@@ -38,6 +38,21 @@ public class EmpController {
      * GÖREV C: Ana sayfa.
      * Veritabanından verimli JOIN sorgusu (findAllWithDetails) ile verileri çeker.
      */
+    @GetMapping("/employee/{id}")
+    public String viewEmployee(@PathVariable("id") int id, Model model) {
+        // FetchType.EAGER sayesinde tüm veriler (yönetici, departman) zaten gelecek
+        Emp emp = empRepository.findById(id).orElse(null);
+
+        if (emp != null) {
+            // Resim URL'sini ayarla
+            emp.setImgUrl("/api/images/" + emp.getEmpno());
+            model.addAttribute("emp", emp);
+            return "emp"; // emp.html'i göster
+        } else {
+            // Çalışan bulunamazsa ana sayfaya yönlendir
+            return "redirect:/";
+        }
+    }
     @GetMapping("/")
     public String index(Model model) {
         // Repository'de yazdığımız verimli JOIN sorgusunu kullanıyoruz

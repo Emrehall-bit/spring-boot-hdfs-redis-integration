@@ -24,9 +24,9 @@ public interface EmpRepository extends JpaRepository<Emp, Integer> {
     @CacheEvict(value = "employees", allEntries = true)
     @Override
     <S extends Emp> S save(S entity);
-    
 
 
+    @Cacheable(value = "employees", key = "'findAllWithDetails'")
     @Query("SELECT e FROM Emp e JOIN FETCH e.department LEFT JOIN FETCH e.manager")
     List<Emp> findAllWithDetails();
 }
